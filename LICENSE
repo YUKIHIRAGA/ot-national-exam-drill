@@ -19,3 +19,93 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+保存するときは **Commit changes** を押してください。
+
+2. 次にリポジトリ画面で **Add file → Create new file** を選び、ファイル名を
+
+```text
+generate_drill.py
+import argparse
+import csv
+import random
+from pathlib import Path
+
+
+def load_questions(path):
+    with open(path, "r", encoding="utf-8-sig", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def write_csv(path, rows, fieldnames):
+    with open(path, "w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate a randomized examination drill."
+    )
+    parser.add_argument(
+        "--input",
+        default="sample_questions.csv",
+        help="Input CSV file"
+    )
+    parser.add_argument(
+        "--count",
+        type=int,
+        default=5,
+        help="Number of questions"
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Optional random seed"
+    )
+    args = parser.parse_args()
+
+    questions = load_questions(args.input)
+
+    if not questions:
+        raise ValueError("No questions were found in the input file.")
+
+    rng = random.Random(args.seed)
+    count = min(args.count, len(questions))
+    selected = rng.sample(questions, count)
+
+    question_fields = [
+        "id",
+        "category",
+        "question",
+        "option1",
+        "option2",
+        "option3",
+        "option4",
+        "option5",
+    ]
+
+    drill_rows = [
+        {field: q.get(field, "") for field in question_fields}
+        for q in selected
+    ]
+
+    answer_rows = [
+        {
+            "id": q.get("id", ""),
+            "answer": q.get("answer", ""),
+        }
+        for q in selected
+    ]
+
+    write_csv("drill.csv", drill_rows, question_fields)
+    write_csv("answer_key.csv", answer_rows, ["id", "answer"])
+
+    print(f"Generated {count} questions.")
+    print("Created: drill.csv")
+    print("Created: answer_key.csv")
+
+
+if __name__ == "__main__":
+    main()
