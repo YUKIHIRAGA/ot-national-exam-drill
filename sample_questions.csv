@@ -1,0 +1,6 @@
+id,category,question,option1,option2,option3,option4,option5,answer
+SAMPLE-001,Sample Category A,This is a synthetic sample question 1.,Option 1,Option 2,Option 3,Option 4,Option 5,1
+SAMPLE-002,Sample Category A,This is a synthetic sample question 2.,Option 1,Option 2,Option 3,Option 4,Option 5,2
+SAMPLE-003,Sample Category B,This is a synthetic sample question 3.,Option 1,Option 2,Option 3,Option 4,Option 5,3
+SAMPLE-004,Sample Category B,This is a synthetic sample question 4.,Option 1,Option 2,Option 3,Option 4,Option 5,4
+SAMPLE-005,Sample Category C,This is a synthetic sample question 5.,Option 1,Option 2,Option 3,Option 4,Option 5,5
